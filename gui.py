@@ -12,7 +12,7 @@ import tags
 class HabitTrackerGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title('Coding Habit Tracker')
+        self.root.title('Habit Tracker')
         self.root.geometry('750x550')
 
         self.data = storage.load_data()

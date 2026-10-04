@@ -4,7 +4,7 @@ import storage
 import tracker
 
 MENU = """
-  Coding Habit Tracker
+  Habit Tracker
   --------------------
   1) Mark a session
   2) Unmark a day
