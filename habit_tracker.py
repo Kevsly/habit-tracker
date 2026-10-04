@@ -50,6 +50,11 @@ def do_unmark(data):
     if day is None:
         return
 
+    confirm = input(f"  Clear session on {day.isoformat()}? (y/N): ").strip().lower()
+    if confirm not in ("y", "yes"):
+        print("  Cancelled.")
+        return
+
     if tracker.clear_session(data, day):
         print(f"  Cleared {day.isoformat()}.")
     else:
