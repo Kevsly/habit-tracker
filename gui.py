@@ -4,13 +4,14 @@ from datetime import date
 
 import storage
 import tracker
+import backup
 
 
 class HabitTrackerGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Coding Habit Tracker")
-        self.root.geometry("600x400")
+        self.root.geometry("650x450")
 
         self.data = storage.load_data()
 
@@ -26,19 +27,25 @@ class HabitTrackerGUI:
         btn_frame = ttk.Frame(self.main_frame)
         btn_frame.grid(row=0, column=0, columnspan=2, sticky=(tk.W, tk.E))
         ttk.Button(btn_frame, text="Mark Today", command=self.mark_today).grid(
-            row=0, column=0, padx=5, pady=5
+            row=0, column=0, padx=3, pady=5
         )
         ttk.Button(btn_frame, text="Mark Yesterday", command=self.mark_yesterday).grid(
-            row=0, column=1, padx=5, pady=5
+            row=0, column=1, padx=3, pady=5
         )
         ttk.Button(btn_frame, text="Clear Selected", command=self.clear_selected).grid(
-            row=0, column=2, padx=5, pady=5
+            row=0, column=2, padx=3, pady=5
         )
         ttk.Button(btn_frame, text="Refresh", command=self.refresh).grid(
-            row=0, column=3, padx=5, pady=5
+            row=0, column=3, padx=3, pady=5
         )
         ttk.Button(btn_frame, text="Set Goal", command=self.set_goal).grid(
-            row=0, column=4, padx=5, pady=5
+            row=0, column=4, padx=3, pady=5
+        )
+        ttk.Button(btn_frame, text="Export", command=self.export).grid(
+            row=0, column=5, padx=3, pady=5
+        )
+        ttk.Button(btn_frame, text="Import", command=self.import_data).grid(
+            row=0, column=6, padx=3, pady=5
         )
 
         # Stats
@@ -64,8 +71,8 @@ class HabitTrackerGUI:
         self.tree.heading("note", text="Note")
         self.tree.column("day", width=60)
         self.tree.column("date", width=100)
-        self.tree.column("status", width=60)
-        self.tree.column("note", width=300)
+        self.tree.column("status", width=70)
+        self.tree.column("note", width=320)
 
         scrollbar = ttk.Scrollbar(
             list_frame, orient=tk.VERTICAL, command=self.tree.yview
@@ -109,9 +116,6 @@ class HabitTrackerGUI:
         self.mark_day(date.today())
 
     def mark_yesterday(self):
-        self.mark_day(date.today().replace(day=date.today().day) if False else None)  # dummy
-
-    def mark_yesterday(self):
         from datetime import timedelta
 
         self.mark_day(date.today() - timedelta(days=1))
@@ -137,12 +141,15 @@ class HabitTrackerGUI:
         from datetime import date
 
         day = date.fromisoformat(day_str)
-        if tracker.clear_session(self.data, day):
-            storage.save_data(self.data)
-            messagebox.showinfo("Cleared", f"Cleared {day.isoformat()}.")
-        else:
-            messagebox.showinfo("Nothing", f"Nothing marked on {day.isoformat()}.")
-        self.refresh()
+        if messagebox.askyesno(
+            "Confirm", f"Clear session on {day.isoformat()}?"
+        ):
+            if tracker.clear_session(self.data, day):
+                storage.save_data(self.data)
+                messagebox.showinfo("Cleared", f"Cleared {day.isoformat()}.")
+            else:
+                messagebox.showinfo("Nothing", f"Nothing marked on {day.isoformat()}.")
+            self.refresh()
 
     def set_goal(self):
         goal = simpledialog.askinteger(
@@ -156,6 +163,15 @@ class HabitTrackerGUI:
         self.data["goal"] = goal
         storage.save_data(self.data)
         self.refresh()
+
+    def export(self):
+        backup.export_data()
+
+    def import_data(self):
+        result = backup.import_data()
+        if result is not None:
+            self.data = result
+            self.refresh()
 
 
 def main():
