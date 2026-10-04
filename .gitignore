@@ -1,6 +1,15 @@
 __pycache__/
 *.py[cod]
+*.egg-info/
 .venv/
 venv/
 .env
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+
 data.json
+data.json.bak
+data.json.corrupt
+data.sqlite3

@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "habit-tracker"
+version = "1.0.0"
+description = "A habit tracker for coding sessions, with CLI, TUI and Tkinter GUI front-ends over one shared core."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Kevsly" }]
+keywords = ["habit", "tracker", "streak", "cli", "tui", "tkinter"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Environment :: X11 Applications",
+    "Intended Audience :: End Users/Desktop",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "tzdata; platform_system == 'Windows'",
+]
+
+[project.optional-dependencies]
+rich = ["rich>=13.7"]
+tui = ["textual>=0.80"]
+dates = ["dateparser>=1.2"]
+dirs = ["platformdirs>=4.2"]
+gui = ["tkcalendar>=1.6"]
+build = ["pyinstaller>=6.6"]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+all = [
+    "rich>=13.7",
+    "textual>=0.80",
+    "dateparser>=1.2",
+    "platformdirs>=4.2",
+    "tkcalendar>=1.6",
+]
+
+[project.scripts]
+ht = "habit_tracker.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Kevsly/habit-tracker"
+Issues = "https://github.com/Kevsly/habit-tracker/issues"
+
+[tool.setuptools]
+packages = ["habit_tracker"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["build", "dist"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "RET", "SIM", "PTH", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"habit_tracker/tui.py" = ["SIM108"]
+"habit_tracker/gui.py" = ["B008"]
+# Branchy validation reads more clearly than a single long ternary.
+"habit_tracker/state.py" = ["SIM108"]
+"habit_tracker/notify.py" = ["SIM108"]
+
+[tool.ruff.format]
+quote-style = "double"
